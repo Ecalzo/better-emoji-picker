@@ -1,0 +1,239 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #2b2b2b;
+  --bg-header: #333;
+  --bg-hover: #3d3d3d;
+  --bg-selected: #4a4a4a;
+  --text: #e0e0e0;
+  --text-muted: #888;
+  --border: #444;
+  --accent: #5b9bd5;
+  --radius: 8px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  width: 380px;
+  height: 420px;
+}
+
+#picker {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+/* ── Header ─────────────────────────────────── */
+
+#header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+}
+
+#search-input {
+  flex: 1;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+
+#search-input:focus {
+  border-color: var(--accent);
+}
+
+#search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ── Skin Tone ──────────────────────────────── */
+
+#skin-tone-wrapper {
+  position: relative;
+}
+
+#skin-tone-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+#skin-tone-btn:hover {
+  background: var(--bg-hover);
+}
+
+#skin-tone-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--bg-header);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#skin-tone-menu.hidden {
+  display: none;
+}
+
+.skin-option {
+  width: 28px;
+  height: 28px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.skin-option:hover {
+  background: var(--bg-hover);
+}
+
+.skin-option.active {
+  border-color: var(--accent);
+}
+
+/* ── Category Bar ───────────────────────────── */
+
+#category-bar {
+  display: flex;
+  gap: 2px;
+  padding: 4px 8px;
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.cat-tab {
+  flex-shrink: 0;
+  width: 32px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0.5;
+  transition: opacity 0.1s, background 0.1s;
+}
+
+.cat-tab:hover {
+  background: var(--bg-hover);
+  opacity: 0.8;
+}
+
+.cat-tab.active {
+  opacity: 1;
+  background: var(--bg-selected);
+}
+
+/* ── Emoji Grid ─────────────────────────────── */
+
+#emoji-grid {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 38px);
+  justify-content: center;
+  gap: 2px;
+  align-content: start;
+  outline: none;
+}
+
+#emoji-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+#emoji-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#emoji-grid::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.emoji-btn {
+  width: 38px;
+  height: 38px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.1s;
+}
+
+.emoji-btn:hover {
+  background: var(--bg-hover);
+}
+
+.emoji-btn.selected {
+  border-color: var(--accent);
+  background: var(--bg-selected);
+}
+
+/* ── Preview Bar ────────────────────────────── */
+
+#preview {
+  height: 28px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-header);
+  border-top: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
