@@ -4,7 +4,7 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 
 /// Register the global hotkey to toggle the emoji picker.
 pub fn register_hotkey(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
-    let shortcut: Shortcut = "super+period".parse()?;
+    let shortcut: Shortcut = "ctrl+super+e".parse()?;
 
     app.global_shortcut().on_shortcut(shortcut, move |app_handle, _shortcut, event| {
         if event.state == ShortcutState::Pressed {
@@ -26,6 +26,6 @@ pub fn register_hotkey(app: &tauri::App) -> Result<(), Box<dyn std::error::Error
         }
     })?;
 
-    log::info!("Global hotkey registered: Super+.");
+    eprintln!("[emoji-picker] Global hotkey registered: Ctrl+Super+E");
     Ok(())
 }

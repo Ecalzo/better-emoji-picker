@@ -1,9 +1,7 @@
 mod autotype;
-mod clipboard;
 mod focus;
 mod hotkey;
 
-use clipboard::ClipboardManager;
 use focus::FocusState;
 
 /// Tauri command: type an emoji into the previously focused app.
@@ -12,9 +10,8 @@ fn select_emoji(
     emoji: String,
     window: tauri::WebviewWindow,
     focus_state: tauri::State<'_, FocusState>,
-    clipboard: tauri::State<'_, ClipboardManager>,
 ) -> Result<(), String> {
-    autotype::type_emoji(&emoji, &window, &focus_state, &clipboard)
+    autotype::type_emoji(&emoji, &window, &focus_state)
 }
 
 /// Tauri command: hide the picker window (e.g. on Escape).
@@ -28,11 +25,10 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .manage(FocusState::new())
-        .manage(ClipboardManager::new())
         .invoke_handler(tauri::generate_handler![select_emoji, hide_window])
         .setup(|app| {
             if let Err(e) = hotkey::register_hotkey(app) {
-                log::error!("Failed to register global hotkey: {}", e);
+                eprintln!("[emoji-picker] ERROR: Failed to register global hotkey: {}", e);
             }
             Ok(())
         })
