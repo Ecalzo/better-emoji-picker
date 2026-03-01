@@ -4,6 +4,7 @@ import {
   getRecent, addRecent, getSkinTone, setSkinTone
 } from './emoji-data.js';
 import { buildIndex, search } from './search.js';
+import { showSplash } from './splash.js';
 
 const { invoke } = window.__TAURI__.core;
 const { listen } = window.__TAURI__.event;
@@ -27,14 +28,15 @@ let displayedEmojis = []; // currently rendered emojis [{emoji, index}]
 async function init() {
   allEmojis = await loadEmojiData();
   buildIndex(allEmojis);
-  currentSkinTone = getSkinTone();
 
-  renderCategoryBar();
-  renderSkinToneButton();
-  showRecent();
-  setupListeners();
-
-  searchInput.focus();
+  showSplash(() => {
+    currentSkinTone = getSkinTone();
+    renderCategoryBar();
+    renderSkinToneButton();
+    showRecent();
+    setupListeners();
+    searchInput.focus();
+  });
 }
 
 // ── Category Bar ────────────────────────────────────────────────
@@ -170,8 +172,10 @@ function clearPreview() {
 
 // ── Skin Tone ───────────────────────────────────────────────────
 
+const HAND_EMOJIS = ['\u270B', '\u270B\uD83C\uDFFB', '\u270B\uD83C\uDFFC', '\u270B\uD83C\uDFFD', '\u270B\uD83C\uDFFE', '\u270B\uD83C\uDFFF'];
+
 function renderSkinToneButton() {
-  skinToneBtn.textContent = currentSkinTone === 0 ? '✋' : SKIN_TONES[currentSkinTone].unicode;
+  skinToneBtn.textContent = HAND_EMOJIS[currentSkinTone];
 
   // Build menu
   skinToneMenu.innerHTML = '';
@@ -179,7 +183,7 @@ function renderSkinToneButton() {
     const tone = SKIN_TONES[i];
     const btn = document.createElement('button');
     btn.className = 'skin-option' + (i === currentSkinTone ? ' active' : '');
-    btn.textContent = i === 0 ? '✋' : tone.unicode;
+    btn.textContent = HAND_EMOJIS[i];
     btn.title = tone.name;
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -265,6 +269,9 @@ function setupListeners() {
   searchInput.addEventListener('keydown', (e) => {
     if (['ArrowDown', 'Enter', 'Escape', 'Tab'].includes(e.key)) {
       handleKeyDown(e);
+      if (e.key === 'ArrowDown') {
+        emojiGrid.focus();
+      }
     }
   });
 

@@ -5,20 +5,21 @@
 }
 
 :root {
-  --bg: #2b2b2b;
-  --bg-header: #333;
-  --bg-hover: #3d3d3d;
-  --bg-selected: #4a4a4a;
-  --text: #e0e0e0;
-  --text-muted: #888;
-  --border: #444;
-  --accent: #5b9bd5;
-  --radius: 8px;
+  --bg: rgba(36, 36, 38, 0.92);
+  --bg-header: rgba(44, 44, 46, 0.6);
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  --bg-selected: rgba(255, 255, 255, 0.12);
+  --text: #f5f5f7;
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --border: rgba(255, 255, 255, 0.1);
+  --accent: #ff9f0a;
+  --accent-glow: rgba(255, 159, 10, 0.25);
+  --radius: 14px;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+  background: transparent;
   color: var(--text);
   overflow: hidden;
   user-select: none;
@@ -34,6 +35,12 @@ body {
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--border);
+  background: var(--bg);
+  backdrop-filter: blur(50px) saturate(180%);
+  -webkit-backdrop-filter: blur(50px) saturate(180%);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    0 0 0 0.5px rgba(255, 255, 255, 0.06) inset;
 }
 
 /* ── Header ─────────────────────────────────── */
@@ -41,26 +48,28 @@ body {
 #header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px;
-  background: var(--bg-header);
-  border-bottom: 1px solid var(--border);
+  gap: 8px;
+  padding: 10px 10px 6px;
+  -webkit-app-region: drag;
 }
 
 #search-input {
   flex: 1;
-  height: 32px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg);
+  height: 34px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
-  font-size: 13px;
+  font-size: 13.5px;
   outline: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  -webkit-app-region: no-drag;
 }
 
 #search-input:focus {
-  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 #search-input::placeholder {
@@ -71,39 +80,48 @@ body {
 
 #skin-tone-wrapper {
   position: relative;
+  -webkit-app-region: no-drag;
 }
 
 #skin-tone-btn {
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg);
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  transition: background 0.15s, transform 0.15s;
 }
 
 #skin-tone-btn:hover {
   background: var(--bg-hover);
+  transform: scale(1.06);
+}
+
+#skin-tone-btn:active {
+  transform: scale(0.94);
 }
 
 #skin-tone-menu {
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 4px;
+  margin-top: 6px;
   display: flex;
-  gap: 2px;
-  padding: 4px;
-  background: var(--bg-header);
+  gap: 3px;
+  padding: 6px;
+  background: rgba(44, 44, 46, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 10px;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 #skin-tone-menu.hidden {
@@ -111,25 +129,28 @@ body {
 }
 
 .skin-option {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border: 2px solid transparent;
-  border-radius: 4px;
+  border-radius: 8px;
   background: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  transition: all 0.15s;
 }
 
 .skin-option:hover {
   background: var(--bg-hover);
+  transform: scale(1.1);
 }
 
 .skin-option.active {
   border-color: var(--accent);
+  background: rgba(255, 159, 10, 0.1);
 }
 
 /* ── Category Bar ───────────────────────────── */
@@ -137,32 +158,35 @@ body {
 #category-bar {
   display: flex;
   gap: 2px;
-  padding: 4px 8px;
-  background: var(--bg-header);
-  border-bottom: 1px solid var(--border);
+  padding: 2px 8px 6px;
   overflow-x: auto;
+}
+
+#category-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .cat-tab {
   flex-shrink: 0;
-  width: 32px;
-  height: 28px;
+  width: 34px;
+  height: 30px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   background: none;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  opacity: 0.5;
-  transition: opacity 0.1s, background 0.1s;
+  opacity: 0.4;
+  transition: all 0.15s ease;
 }
 
 .cat-tab:hover {
   background: var(--bg-hover);
-  opacity: 0.8;
+  opacity: 0.75;
+  transform: scale(1.08);
 }
 
 .cat-tab.active {
@@ -176,17 +200,18 @@ body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 4px;
+  padding: 4px 6px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 38px);
+  grid-template-columns: repeat(auto-fill, 40px);
   justify-content: center;
   gap: 2px;
   align-content: start;
   outline: none;
+  border-top: 1px solid var(--border);
 }
 
 #emoji-grid::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 #emoji-grid::-webkit-scrollbar-track {
@@ -194,44 +219,53 @@ body {
 }
 
 #emoji-grid::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
 
+#emoji-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .emoji-btn {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border: 2px solid transparent;
-  border-radius: 6px;
+  border-radius: 10px;
   background: none;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: background 0.1s;
+  transition: transform 0.12s ease, background 0.12s ease;
 }
 
 .emoji-btn:hover {
   background: var(--bg-hover);
+  transform: scale(1.2);
+}
+
+.emoji-btn:active {
+  transform: scale(0.9);
 }
 
 .emoji-btn.selected {
   border-color: var(--accent);
-  background: var(--bg-selected);
+  background: rgba(255, 159, 10, 0.08);
 }
 
 /* ── Preview Bar ────────────────────────────── */
 
 #preview {
-  height: 28px;
-  padding: 0 10px;
+  height: 32px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
+  gap: 6px;
   font-size: 12px;
   color: var(--text-muted);
-  background: var(--bg-header);
   border-top: 1px solid var(--border);
   white-space: nowrap;
   overflow: hidden;

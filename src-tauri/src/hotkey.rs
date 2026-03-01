@@ -4,7 +4,7 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 
 /// Register the global hotkey to toggle the emoji picker.
 pub fn register_hotkey(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
-    let shortcut: Shortcut = "ctrl+super+e".parse()?;
+    let shortcut: Shortcut = "super+.".parse()?;
 
     app.global_shortcut().on_shortcut(shortcut, move |app_handle, _shortcut, event| {
         if event.state == ShortcutState::Pressed {
@@ -17,6 +17,7 @@ pub fn register_hotkey(app: &tauri::App) -> Result<(), Box<dyn std::error::Error
                 } else {
                     // Capture focus before showing
                     focus::capture_focus(&focus_state);
+                    let _ = window.center();
                     let _ = window.show();
                     let _ = window.set_focus();
                     // Tell frontend to focus the search bar
@@ -26,6 +27,6 @@ pub fn register_hotkey(app: &tauri::App) -> Result<(), Box<dyn std::error::Error
         }
     })?;
 
-    eprintln!("[emoji-picker] Global hotkey registered: Ctrl+Super+E");
+    eprintln!("[emoji-picker] Global hotkey registered: Cmd+.");
     Ok(())
 }

@@ -4,7 +4,7 @@ use std::sync::Mutex;
 /// restore focus after the user picks an emoji.
 pub struct FocusState {
     /// On Linux X11: the window ID from xdotool
-    /// On macOS: unused (we use NSRunningApplication pid)
+    #[cfg(target_os = "linux")]
     pub window_id: Mutex<Option<String>>,
     /// On macOS: the pid of the previously focused app
     #[cfg(target_os = "macos")]
@@ -14,6 +14,7 @@ pub struct FocusState {
 impl FocusState {
     pub fn new() -> Self {
         Self {
+            #[cfg(target_os = "linux")]
             window_id: Mutex::new(None),
             #[cfg(target_os = "macos")]
             prev_app_pid: Mutex::new(None),
@@ -53,12 +54,10 @@ fn capture_focus_linux(state: &FocusState) {
 fn capture_focus_macos(state: &FocusState) {
     use objc2_app_kit::NSWorkspace;
 
-    unsafe {
-        let workspace = NSWorkspace::sharedWorkspace();
-        if let Some(app) = workspace.frontmostApplication() {
-            let pid = app.processIdentifier();
-            *state.prev_app_pid.lock().unwrap() = Some(pid);
-        }
+    let workspace = NSWorkspace::sharedWorkspace();
+    if let Some(app) = workspace.frontmostApplication() {
+        let pid = app.processIdentifier();
+        *state.prev_app_pid.lock().unwrap() = Some(pid);
     }
 }
 
@@ -84,17 +83,16 @@ fn restore_focus_linux(state: &FocusState) {
 }
 
 #[cfg(target_os = "macos")]
+#[allow(deprecated)]
 fn restore_focus_macos(state: &FocusState) {
     use objc2_app_kit::{NSApplicationActivationOptions, NSRunningApplication};
 
     let pid = state.prev_app_pid.lock().unwrap().clone();
     if let Some(pid) = pid {
-        unsafe {
-            if let Some(app) = NSRunningApplication::runningApplicationWithProcessIdentifier(pid) {
-                app.activateWithOptions(
-                    NSApplicationActivationOptions::NSApplicationActivateIgnoringOtherApps,
-                );
-            }
+        if let Some(app) = NSRunningApplication::runningApplicationWithProcessIdentifier(pid) {
+            app.activateWithOptions(
+                NSApplicationActivationOptions::ActivateIgnoringOtherApps,
+            );
         }
     }
 }
